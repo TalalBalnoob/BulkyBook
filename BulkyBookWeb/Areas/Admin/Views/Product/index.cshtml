@@ -1,0 +1,55 @@
+@model List<BulkyBook.Models.Models.Product>
+
+
+<div class="container">
+    <div class="row pt-6">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Creat New Product
+            </a>
+        </div>
+    </div>
+
+    <partial name="_Notification"/>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Author Name</th>
+            <th>ISBN</th>
+            <th>List Price</th>
+            <th>Category</th>
+            <th>Actions</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var obj in Model.OrderBy(u => u.Title)){
+            <tr>
+                <td>@obj.Title</td>
+                <td>@obj.Author</td>
+                <td>@obj.ISBN</td>
+                <td>@obj.ListPrice</td>
+                <td>@obj.CategoryId</td>
+                <td>
+                    <div class="btn-group w-75" role="group">
+                        <a asp-controller="Product" asp-action="Upsert" asp-route-id="@obj.Id"
+                           class="btn btn-primary mx-2">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id"
+                           class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
