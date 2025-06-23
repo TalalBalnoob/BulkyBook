@@ -1,4 +1,5 @@
 using BulkyBook.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -6,14 +7,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BulkyBook.DataAccess.Data;
 
-public class ApplicationDbContext : IdentityDbContext{
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>{
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options){
     }
 
     public DbSet<Category> Categories{ get; set; }
-
     public DbSet<Product> Products{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
