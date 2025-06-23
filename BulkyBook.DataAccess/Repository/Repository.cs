@@ -14,14 +14,24 @@ public class Repository<T> : IRepository<T> where T : class{
         dbSet = _db.Set<T>();
     }
 
-    public IEnumerable<T> GetAll(){
+    public IEnumerable<T> GetAll(string? propList = null){
         IQueryable<T> query = dbSet;
+        if (propList != null){
+            foreach (var prop in propList.Split(new char[','], StringSplitOptions.RemoveEmptyEntries)){
+                query = query.Include(prop);
+            }
+        }
         return query.ToList();
     }
 
-    public T Get(Expression<Func<T, bool>> filter){
+    public T Get(Expression<Func<T, bool>> filter, string? propList = null){
         IQueryable<T> query = dbSet;
         query = dbSet.Where(filter);
+        if (propList != null){
+            foreach (var prop in propList.Split(new char[','], StringSplitOptions.RemoveEmptyEntries)){
+                query = query.Include(prop);
+            }
+        }
 
         return query.FirstOrDefault();
     }

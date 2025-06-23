@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace BulkyBook.Models.Models;
@@ -35,7 +36,7 @@ public class Product{
 
     [ForeignKey("CategoryId")]
     [ValidateNever]
-    public Category Category{ get; set; }
-
+    public Category? Category{ get; set; }
+    
     [ValidateNever] public string? ImageUrl{ get; set; }
 }

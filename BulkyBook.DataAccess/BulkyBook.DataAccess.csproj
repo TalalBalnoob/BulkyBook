@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
@@ -18,6 +19,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BulkyBook.Models\BulkyBook.Models.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc">
+            <HintPath>..\..\..\.nuget\packages\microsoft.visualstudio.web.codegenerators.mvc\9.0.0\lib\net8.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>
