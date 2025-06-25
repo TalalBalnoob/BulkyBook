@@ -14,6 +14,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>{
 
     public DbSet<Category> Categories{ get; set; }
     public DbSet<Product> Products{ get; set; }
+    public DbSet<Compony> Componies{ get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts{ get; set; }
     public DbSet<ApplicationUser> ApplicationUsers{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
@@ -23,6 +25,31 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>{
             new Category{ Id = 1, Name = "Action", DisplayOrder = 1 },
             new Category{ Id = 2, Name = "SciFi", DisplayOrder = 2 },
             new Category{ Id = 3, Name = "History", DisplayOrder = 3 }
+        );
+
+        modelBuilder.Entity<Compony>().HasData(
+            new Compony{
+                Id = 1, Name = "Tech Solution", StreetAddress = "123 Tech St", City = "Tech City",
+                PostalCode = "12121", State = "IL", PhoneNumber = "6669990000"
+            },
+            new Compony{
+                Id = 2,
+                Name = "Vivid Books",
+                StreetAddress = "999 Vid St",
+                City = "Vid City",
+                PostalCode = "66666",
+                State = "IL",
+                PhoneNumber = "7779990000"
+            },
+            new Compony{
+                Id = 3,
+                Name = "Readers Club",
+                StreetAddress = "999 Main St",
+                City = "Lala land",
+                PostalCode = "99999",
+                State = "NY",
+                PhoneNumber = "1113335555"
+            }
         );
 
         modelBuilder.Entity<Product>().HasData(

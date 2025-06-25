@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models.Models;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -34,6 +35,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -41,6 +43,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
+            IUnitOfWork unitOfWork,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -50,6 +53,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -107,7 +111,9 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
 
             [Required] public string Name{ get; set; }
             public string? Role{ get; set; }
+            public int? ComponyId{ get; set; }
             [ValidateNever] public IEnumerable<SelectListItem> RoleList{ get; set; }
+            [ValidateNever] public IEnumerable<SelectListItem> ComponyList{ get; set; }
         }
 
 
@@ -121,7 +127,10 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             }
 
             Input = new(){
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem{ Value = i, Text = i })
+                RoleList =
+                    _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem{ Value = i, Text = i }),
+                ComponyList = _unitOfWork.compony.GetAll()
+                    .Select(i => new SelectListItem{ Text = i.Name, Value = i.Id.ToString() })
             };
             
             ReturnUrl = returnUrl;
@@ -140,6 +149,10 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.Name = Input.Name;
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (Input.Role == SD.RoleCompany){
+                    user.CompanyId = Input.ComponyId;
+                }
 
                 if (result.Succeeded)
                 {
