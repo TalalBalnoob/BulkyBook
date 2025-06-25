@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models.Models;
 using BulkyWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyWeb.Controllers;
@@ -21,11 +23,38 @@ public class HomeController : Controller{
         return View(productsList);
     }
 
-    public IActionResult Details(int id){
-        var product = _unitOfWork.product.Get(u => id == u.Id, propList: "Category");
-        if (product == null) return NotFound();
+    public IActionResult Details(int productId){
+        var shoppingCart = new ShoppingCart(){
+            Product = _unitOfWork.product.Get(u => productId == u.Id, propList: "Category"),
+            Count = 1,
+            ProductId = productId
+        };
+        if (shoppingCart.Product == null) return NotFound();
 
-        return View(product);
+        return View(shoppingCart);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult Details(ShoppingCart shoppingCart){
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        shoppingCart.UserId = userId;
+
+        // FIXME: this is my code check if it right
+        var cartFormDb = _unitOfWork.shoppingCart.Get(u => u.UserId == userId && u.ProductId == shoppingCart.ProductId);
+        if (cartFormDb == null){
+            _unitOfWork.shoppingCart.Add(cartFormDb);
+        }
+        else{
+            cartFormDb.Count += shoppingCart.Count;
+            _unitOfWork.shoppingCart.Update(cartFormDb);
+        }
+
+        TempData["success"] = $"Product '{shoppingCart.Product.Title}' was added to cart successfully";
+        _unitOfWork.Save();
+
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy(){

@@ -24,8 +24,8 @@ public class Repository<T> : IRepository<T> where T : class{
         return query.ToList();
     }
 
-    public T Get(Expression<Func<T, bool>> filter, string? propList = null){
-        IQueryable<T> query = dbSet;
+    public T Get(Expression<Func<T, bool>> filter, string? propList = null, bool tracked = false){
+        IQueryable<T> query = tracked ? dbSet : dbSet.AsNoTracking();
         query = dbSet.Where(filter);
         if (propList != null){
             foreach (var prop in propList.Split(new char[','], StringSplitOptions.RemoveEmptyEntries)){

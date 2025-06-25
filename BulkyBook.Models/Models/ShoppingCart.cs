@@ -13,7 +13,7 @@ public class ShoppingCart{
     [ValidateNever]
     public Product Product{ get; set; }
 
-    public int Quantity{ get; set; }
+    public int Count{ get; set; }
 
     public string UserId{ get; set; }
     [ForeignKey("UserId")] [ValidateNever] public ApplicationUser User{ get; set; }

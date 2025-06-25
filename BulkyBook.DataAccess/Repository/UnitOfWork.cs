@@ -8,12 +8,16 @@ public class UnitOfWork : IUnitOfWork{
     public ICategoryRepository category{ get; private set; }
     public IProductRepository product{ get; private set; }
     public IComponyRepository compony{ get; private set; }
+    public IShoppingCartRepository shoppingCart{ get; private set; }
+    public IApplicationUserRepository applicationUser{ get; private set; }
 
     public UnitOfWork(ApplicationDbContext db){
         _db = db;
         category = new CategoryRepository(_db);
         product = new ProductRepository(_db);
         compony = new ComponyRepository(_db);
+        shoppingCart = new ShoppingCartRepository(_db);
+        applicationUser = new ApplicationUserRepository(_db);
     }
 
     public void Save(){
