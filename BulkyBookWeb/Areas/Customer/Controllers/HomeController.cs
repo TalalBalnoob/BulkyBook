@@ -23,13 +23,12 @@ public class HomeController : Controller{
         return View(productsList);
     }
 
-    public IActionResult Details(int productId){
-        var shoppingCart = new ShoppingCart(){
-            Product = _unitOfWork.product.Get(u => productId == u.Id, propList: "Category"),
+    public IActionResult Details(int id){
+        ShoppingCart shoppingCart = new(){
+            Product = _unitOfWork.product.Get(u => id == u.Id, propList: "Category"),
             Count = 1,
-            ProductId = productId
+            ProductId = id
         };
-        if (shoppingCart.Product == null) return NotFound();
 
         return View(shoppingCart);
     }
@@ -44,15 +43,16 @@ public class HomeController : Controller{
         // FIXME: this is my code check if it right
         var cartFormDb = _unitOfWork.shoppingCart.Get(u => u.UserId == userId && u.ProductId == shoppingCart.ProductId);
         if (cartFormDb == null){
-            _unitOfWork.shoppingCart.Add(cartFormDb);
+            // work around to fix the issue of the id being set to the product id 
+            shoppingCart.Id = 0;
+            _unitOfWork.shoppingCart.Add(shoppingCart);
+            _unitOfWork.Save();
         }
         else{
             cartFormDb.Count += shoppingCart.Count;
             _unitOfWork.shoppingCart.Update(cartFormDb);
+            _unitOfWork.Save();
         }
-
-        TempData["success"] = $"Product '{shoppingCart.Product.Title}' was added to cart successfully";
-        _unitOfWork.Save();
 
         return RedirectToAction(nameof(Index));
     }

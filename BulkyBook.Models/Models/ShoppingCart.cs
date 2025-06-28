@@ -13,8 +13,11 @@ public class ShoppingCart{
     [ValidateNever]
     public Product Product{ get; set; }
 
+    [Range(1, 1000, ErrorMessage = "Count must be between 1 and 1000")]
     public int Count{ get; set; }
 
-    public string UserId{ get; set; }
+    public string? UserId{ get; set; }
     [ForeignKey("UserId")] [ValidateNever] public ApplicationUser User{ get; set; }
+
+    [NotMapped] public double Price{ get; set; }
 }
