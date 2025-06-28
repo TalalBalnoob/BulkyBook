@@ -10,6 +10,8 @@ public class UnitOfWork : IUnitOfWork{
     public IComponyRepository compony{ get; private set; }
     public IShoppingCartRepository shoppingCart{ get; private set; }
     public IApplicationUserRepository applicationUser{ get; private set; }
+    public IOrderHeaderRepository orderHeader{ get; private set; }
+    public IOrderDetailRepository orderDetail{ get; private set; }
 
     public UnitOfWork(ApplicationDbContext db){
         _db = db;
@@ -18,6 +20,8 @@ public class UnitOfWork : IUnitOfWork{
         compony = new ComponyRepository(_db);
         shoppingCart = new ShoppingCartRepository(_db);
         applicationUser = new ApplicationUserRepository(_db);
+        orderHeader = new OrderHeaderRepository(_db);
+        orderDetail = new OrderDetailRepository(_db);
     }
 
     public void Save(){

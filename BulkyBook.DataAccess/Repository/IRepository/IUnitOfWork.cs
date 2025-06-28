@@ -6,6 +6,8 @@ public interface IUnitOfWork{
     IComponyRepository compony{ get; }
     IShoppingCartRepository shoppingCart{ get; }
     IApplicationUserRepository applicationUser{ get; }
+    IOrderHeaderRepository orderHeader{ get; }
+    IOrderDetailRepository orderDetail{ get; }
 
     void Save();
 }
