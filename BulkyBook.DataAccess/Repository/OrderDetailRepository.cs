@@ -14,4 +14,6 @@ public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailReposi
     public void Update(OrderDetail orderDetail){
         _db.OrderDetails.Update(orderDetail);
     }
+
+    
 }

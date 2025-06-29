@@ -14,8 +14,11 @@ public class Repository<T> : IRepository<T> where T : class{
         dbSet = _db.Set<T>();
     }
 
-    public IEnumerable<T> GetAll(string? propList = null){
+    public IEnumerable<T> GetAll(string? propList = null, Expression<Func<T, bool>>? filter = null){
         IQueryable<T> query = dbSet;
+        if (filter != null){
+            query = query.Where(filter);
+        }
         if (propList != null){
             foreach (var prop in propList.Split(new char[','], StringSplitOptions.RemoveEmptyEntries)){
                 query = query.Include(prop);
