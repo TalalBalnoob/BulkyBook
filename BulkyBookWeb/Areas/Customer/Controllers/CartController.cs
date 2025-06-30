@@ -141,7 +141,7 @@ public class CartController : Controller{
 
     public IActionResult OrderConfirmation(int id){
         OrderHeader orderHeader = _unitOfWork.orderHeader.Get(u => u.Id == id, propList: "User");
-        if (orderHeader.PaymentStatus != SD.PaymentStatusPending){
+        if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment){
             var service = new SessionService();
             Session session = service.Get(orderHeader.SessionId);
 
