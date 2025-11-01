@@ -85,7 +85,7 @@ public class CartController : Controller{
             ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
         }
         else{
-            ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
         }
 
@@ -150,6 +150,8 @@ public class CartController : Controller{
                 _unitOfWork.orderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                 _unitOfWork.Save();
             }
+
+            HttpContext.Session.Clear();
         }
 
         List<ShoppingCart> shoppingCarts =
@@ -172,12 +174,14 @@ public class CartController : Controller{
     }
 
     public IActionResult Minus(int cartId){
-        var shoppingCart = _unitOfWork.shoppingCart.Get(u => u.Id == cartId);
+        var shoppingCart = _unitOfWork.shoppingCart.Get(u => u.Id == cartId, tracked: true);
         if (shoppingCart == null) return NotFound();
 
         shoppingCart.Count--;
         if (!(shoppingCart.Count <= 0)){
             _unitOfWork.shoppingCart.Update(shoppingCart);
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                _unitOfWork.shoppingCart.GetAll(filter: u => u.UserId == shoppingCart.UserId).Count() - 1);
             _unitOfWork.Save();
         }
 
@@ -188,9 +192,11 @@ public class CartController : Controller{
         var claimsIdentity = (ClaimsIdentity)User.Identity;
         var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var shoppingCart = _unitOfWork.shoppingCart.Get(u => u.Id == cartId && u.UserId == userId);
+        var shoppingCart = _unitOfWork.shoppingCart.Get(u => u.Id == cartId && u.UserId == userId, tracked: true);
         if (shoppingCart == null) return NotFound();
 
+        HttpContext.Session.SetInt32(SD.SessionCart,
+            _unitOfWork.shoppingCart.GetAll(filter: u => u.UserId == userId).Count() - 1);
         _unitOfWork.shoppingCart.Delete(shoppingCart);
         _unitOfWork.Save();
 

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models.Models;
+using BulkyBook.Utility;
 using BulkyWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,8 @@ public class HomeController : Controller{
             shoppingCart.Id = 0;
             _unitOfWork.shoppingCart.Add(shoppingCart);
             _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                _unitOfWork.shoppingCart.GetAll(filter: u => u.UserId == userId).Count());
         }
         else{
             cartFormDb.Count += shoppingCart.Count;
